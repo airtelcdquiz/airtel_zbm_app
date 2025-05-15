@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import jwt from 'jsonwebtoken';
 import query from "@/lib/query";
 import { AuthSession } from "@/lib/types";
+import api from "@/lib/api";
 
 const JWT_SECRET = 'votre_cle_secrete_jwt'; // À changer en production
 
@@ -14,11 +15,14 @@ export default async function AuthSessionWrapper(props: any){
     const _cookies = await cookies()
     const session = _cookies.get("session"); 
 
+  
    
     try {
         if(session === undefined){
             return redirect('/login')
         }
+
+        // await api(await cookies()).get('/me/permissions' );
         // Vérifier le token JWT
         const decoded: any = jwt.verify(session.value, JWT_SECRET);
         
@@ -32,7 +36,7 @@ export default async function AuthSessionWrapper(props: any){
         const sessions: AuthSession[] = JSON.parse(JSON.stringify(rows));
         
         if (sessions.length === 0) {
-            return redirect('/login');
+            // return redirect('/login');
         } else {
           const session_row: AuthSession = sessions[0];
           const date_now = Date.now();
@@ -43,6 +47,7 @@ export default async function AuthSessionWrapper(props: any){
           }
         }
       } catch (e) {
+        console.log(e)
         return redirect('/login');
       }
  

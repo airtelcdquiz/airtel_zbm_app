@@ -21,3 +21,23 @@ export type UserPermissions = {
   roles: Role[];
   permissions: Permission[];
 }; 
+
+
+export interface Classement {
+  participant_full_name: string;
+  participant_phone: string;
+  points: number;
+  school_code: string;
+  schoolname: string;
+}
+
+export interface Document {
+    created_at: string;
+    description: string;
+    file_size: number;
+    id: number;
+    mime_type: string;
+    name: string;
+    updated_at: string;
+    uploaded_by: number;
+}

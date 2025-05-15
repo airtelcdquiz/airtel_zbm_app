@@ -97,6 +97,7 @@ export default function Students(){
              }
           </div>
           </div>
+          
           <div className="h-full w-[300px] bg-white shadow-lg p-6">
             <div className="flex flex-col gap-4">
               <h3 className="text-lg font-bold">Filtres</h3>
