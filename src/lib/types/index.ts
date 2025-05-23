@@ -1,5 +1,3 @@
-
-
 export interface User {
     id: number
     participant_phone: string
@@ -10,6 +8,7 @@ export interface User {
     school_id: number
     class_id: number
     code_school: string
+    is_active: boolean
 }
 
 export interface AuthSession {

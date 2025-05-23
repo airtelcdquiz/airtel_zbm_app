@@ -3,7 +3,8 @@ import api from "@/lib/api";
 import { Permissions, Role, School, User, Permission } from "@/lib/types";
 import { cookies } from "next/headers";
 import React from "react";
-
+import { HomeIcon } from "@heroicons/react/24/outline";
+import Link from "next/link";
 export default async function Page(props: any){
     var user_permissions: Permissions | null = null;
 
@@ -35,8 +36,8 @@ export default async function Page(props: any){
         permissions = (await api(await cookies()).get(`/users/${user.id}/permissions`)).data;
         roles = (await api(await cookies()).get(`/users/${user.id}/roles`)).data;
 
-        console.log(permissions);
-        console.log(roles);
+        // console.log(permissions);
+        // console.log(roles);
     }catch(e){
         console.log(e);
     }
@@ -54,8 +55,18 @@ export default async function Page(props: any){
     }
 
     return <div className="w-full h-full pr-[30px]">
+        <div className="flex flex-row w-full items-center mt-[30px] gap-3">
+            <div className="flex flex-row items-center gap-2 cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-3">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                </svg>
+                <p className="text-sm">Accueil</p>
+            </div>
+            <Link href="/app/users" className="text-sm">/ Utilisateurs</Link>
+            <p className="text-sm">/ {user.participant_full_name}</p>
+        </div>
         <div className="flex-1">
-            <div className="flex flex-row w-full items-center justify-between mt-[30px]">
+            <div className="flex flex-row w-full items-center justify-between mt-[10px]">
                 <p className="text-2xl font-bold">Détails de l'utilisateur</p> 
             </div>
         </div>

@@ -9,7 +9,7 @@ import {Pagination, PaginationItem, PaginationCursor} from "@heroui/pagination";
 import { Spinner } from "@heroui/spinner";
 
 interface CampaignsQuestionsPageProps {
-  state: "enabled" | "disabled";
+  state: "enabled" | "disabled" | "archived";
 }
 
 export default function CampaignsQuestionsPage(props: CampaignsQuestionsPageProps) {
@@ -46,22 +46,23 @@ export default function CampaignsQuestionsPage(props: CampaignsQuestionsPageProp
  
 
   return (
-    <div className="p-6 h-full w-full">
+    <div className="flex flex-col p-6 h-full w-full overflow-y-hidden">
       <div className="flex flex-row justify-between">
-      <div className="flex-1">
-      <h1 className="text-2xl font-bold mb-4">Questions de Campagne</h1>
-      </div> 
-      <button
-        className="mb-4 text-[13px] font-bold px-4 py-[5px] bg-red-500 text-white rounded"
-        onClick={() => router.push("/app/campaigns-questions/new")}>
-        Nouvelle Question
-      </button>
+        <div className="flex-1">
+        <h1 className="text-2xl font-bold mb-4">Questions de Campagne</h1>
+        </div> 
+        <button
+          className="mb-4 text-[13px] font-bold px-4 py-[5px] bg-red-500 text-white rounded"
+          onClick={() => router.push("/app/campaigns-questions/new")}>
+          Nouvelle Question
+        </button>
       </div>
       <div className="w-full flex pt-[10px]">
         <Link href="/app/campaigns-questions/enabled" className={`px-[20px] py-[10px] cursor-pointer text-[13px] border-b-[2px] border-red-0 duration-300 ${ props.state === "enabled" ? "border-red-500 font-bold" : ""}`}><p className={`${props.state === "enabled" ? "text-red-500" : ""} px-[20px] text-bold`}>Activées { props.state === "enabled" ? <span className="text-[10px]">({total})</span> : "" }</p></Link>
         <Link href="/app/campaigns-questions/disabled" className={`px-[20px] py-[10px] cursor-pointer text-[13px] border-b-[2px] border-red-0 duration-300 ${ props.state === "disabled" ? "border-red-500 font-bold" : ""}`}><p className={`${props.state === "disabled" ? "text-red-500" : ""} px-[20px] text-bold`}>Désactivées { props.state === "disabled" ? <span className="text-[10px]">({total})</span> : "" }</p></Link>
+        <Link href="/app/campaigns-questions/archived" className={`px-[20px] py-[10px] cursor-pointer text-[13px] border-b-[2px] border-red-0 duration-300 ${ props.state === "archived" ? "border-red-500 font-bold" : ""}`}><p className={`${props.state === "archived" ? "text-red-500" : ""} px-[20px] text-bold`}>Archivées { props.state === "archived" ? <span className="text-[10px]">({total})</span> : "" }</p></Link>
       </div>
-      <div className="w-full bg-white  overflow-x-scroll text-[13px] p-[20px] rounded-xl shadow-xl mb-[20px]">
+      <div className="w-full bg-white flex-1 h-full overflow-y-hidden  text-[13px] p-[20px] rounded-xl shadow-xl mb-[20px]">
         
         <div className="flex w-full mb-4 gap-[10px]">
               
@@ -87,13 +88,13 @@ export default function CampaignsQuestionsPage(props: CampaignsQuestionsPageProp
             <div className=" px-4 py-2 w-[150px]">Opt. 4</div> 
           </div>
         </div>
-        <div className="flex flex-col divide-y divide-gray-200">
+        <div className="flex flex-1 h-full overflow-y-scroll flex-col divide-y divide-gray-200">
           {loading ? <div className="flex justify-center items-center min-h-[300px] w-full">
             <Spinner />
           </div> : 
           <>
           {questions.map((q) => (
-            <Link key={q.id} href={`/app/campaigns-questions/${q.id}`} className="flex flex-row">
+            <Link key={q.id} href={`/app/campaigns-questions/${q.id}`} className="flex flex-row hover:bg-gray-200 duration-300">
               <div className=" px-4 py-2 w-[80px]">{q.id}</div>
               <div className=" px-4 py-2 flex-1 ">{q.campaign_question}</div>
               <div className={` px-4 py-2 w-[150px] ${q.campaign_answer == 1 ? "bg-green-400" : ""}`}>{q.campaign_value1}</div>
@@ -104,6 +105,7 @@ export default function CampaignsQuestionsPage(props: CampaignsQuestionsPageProp
           ))}
           </>
           }
+          {/* <div className="h-[70px] min-h-[70px] w-full"></div> */}
         </div>
         
       </div>

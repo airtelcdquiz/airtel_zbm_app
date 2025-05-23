@@ -60,6 +60,10 @@ export default function EditCampaignsQuestionPage() {
           <input type="checkbox" name="is_active" checked={!!form.is_active} onChange={e => setForm({ ...form, is_active: e.target.checked })} />
           Active
         </label>
+        <label className="flex items-center gap-2">
+          <input type="checkbox" name="archived" checked={!!form.archived} onChange={e => setForm({ ...form, archived: e.target.checked })} />
+          Archivée
+        </label>
         <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded" disabled={isSaving}>{isSaving ? "Enregistrement en cours..." : "Enregistrer"}</button>
       </form>
         </div>

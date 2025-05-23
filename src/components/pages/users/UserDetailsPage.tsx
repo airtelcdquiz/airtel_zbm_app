@@ -26,6 +26,20 @@ export default function UserDetailsPage(props: UserDetailsPageProps){
     const [superuserLoading, setSuperuserLoading] = React.useState(false);
     const [roleLoading, setRoleLoading] = React.useState<{ [roleId: string]: boolean }>({});
     const [permissionLoading, setPermissionLoading] = React.useState<{ [permissionId: string]: boolean }>({});
+    const [activationLoading, setActivationLoading] = React.useState(false);
+
+    const handleActivationToggle = async () => {
+        setActivationLoading(true);
+        try {
+            const endpoint = user.is_active ? 'deactivate' : 'activate';
+            const response = await api(cookies).post(`/users/${user.id}/${endpoint}`);
+            setUser(response.data.user);
+        } catch (error) {
+            console.error('Erreur lors de la modification du statut:', error);
+        } finally {
+            setActivationLoading(false);
+        }
+    };
 
     // all_roles, all_permissions, school are static, so we can use props directly
 
@@ -45,6 +59,21 @@ export default function UserDetailsPage(props: UserDetailsPageProps){
                         <p>Nom Complet : {user.participant_full_name}</p>
                         <p>Téléphone : {user.participant_phone}</p> 
                         <p>Ecole : {props.school.schoolname}</p>
+                        <div className="mt-4">
+                            <button
+                                onClick={handleActivationToggle}
+                                disabled={activationLoading}
+                                className={`px-4 py-2 rounded ${
+                                    user.is_active 
+                                        ? 'bg-red-500 hover:bg-red-600 text-white' 
+                                        : 'bg-green-500 hover:bg-green-600 text-white'
+                                }`}
+                            >
+                                {activationLoading ? 'Chargement...' : 
+                                    user.is_active ? 'Désactiver le compte' : 'Activer le compte'
+                                }
+                            </button>
+                        </div>
                     </div>
                 )}
 

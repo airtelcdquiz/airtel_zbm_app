@@ -12,6 +12,29 @@ export default function LoginPage(props: any) {
     const [loading, setLoading] = React.useState(false);
     const [error, setError] = React.useState('');
 
+    const normalizePhoneNumber = (phone: string): string => {
+        // Remove all non-digit characters
+        const digits = phone.replace(/\D/g, '');
+        
+        // If number starts with 243, return as is
+        if (digits.startsWith('243')) {
+            return digits;
+        }
+        
+        // If number starts with 0, remove it
+        if (digits.startsWith('0')) {
+            return '243' + digits.substring(1);
+        }
+        
+        // If number starts with 9, add 243
+        if (digits.startsWith('9')) {
+            return '243' + digits;
+        }
+        
+        // For any other case, add 243
+        return '243' + digits;
+    };
+
     const handlePhoneSubmit = async () => {
         if (!phone) {
             setError('Veuillez entrer votre numéro de téléphone');
@@ -19,12 +42,13 @@ export default function LoginPage(props: any) {
         }
         setLoading(true);
         try {
+            const normalizedPhone = normalizePhoneNumber(phone);
             const res = await fetch('/api/auth/send-otp', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ phone_number:phone })
+                body: JSON.stringify({ phone_number: normalizedPhone })
             });
             
             if (!res.ok) throw new Error('Erreur lors de l\'envoi du code');
@@ -45,12 +69,13 @@ export default function LoginPage(props: any) {
         }
         setLoading(true);
         try {
+            const normalizedPhone = normalizePhoneNumber(phone);
             const res = await fetch('/api/auth/verify-otp', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ phone_number:phone, otp })
+                body: JSON.stringify({ phone_number:normalizedPhone, otp })
             });
 
             if (!res.ok) throw new Error('Code OTP invalide');
