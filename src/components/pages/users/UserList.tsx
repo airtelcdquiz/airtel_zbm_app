@@ -45,8 +45,8 @@ export default function UserList(){
             <Link href="/app/users" className="">/ Utilisateurs</Link> 
         </div>
             <div className="w-full items-center justify-between mt-[10px]">
-                <p className="text-2xl font-bold">Liste des Inscripts</p> 
-                <p className="text-[13px] text-gray-500">{total} Inscripts</p> 
+                <p className="text-2xl font-bold">Liste des Inscrits</p> 
+                <p className="text-[13px] text-gray-500">{total} Inscrits</p> 
 
             </div>
             <div className='w-full mt-[20px]  bg-white overflow-x-scroll text-[13px] mb-[20px] p-[20px] rounded-xl shadow-xl'>
