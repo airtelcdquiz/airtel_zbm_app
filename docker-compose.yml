@@ -13,4 +13,9 @@ services:
     command: >
        bash -c "yarn install && yarn dev"
     networks:
-      - shared-network
+      - dokploy-network
+
+
+networks:
+  dokploy-network:
+    external: true  # Use the previously created shared network
