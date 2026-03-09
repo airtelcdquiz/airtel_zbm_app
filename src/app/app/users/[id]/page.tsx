@@ -22,7 +22,7 @@ export default async function Page(props: any){
     try{
         const { id } = await props.params;
         user = (await api(await cookies()).get(`/users/${id}`)).data;
-        school = (await api(await cookies()).get(`/schools/${user?.school_id}`)).data;
+        school = (await api(await cookies()).get(`/schools/${user?.code}`)).data;
 
     }catch(e){
         console.log(e);
@@ -33,8 +33,8 @@ export default async function Page(props: any){
     }
 
     try{
-        permissions = (await api(await cookies()).get(`/users/${user.id}/permissions`)).data;
-        roles = (await api(await cookies()).get(`/users/${user.id}/roles`)).data;
+        permissions = (await api(await cookies()).get(`/users/${user.phone_number}/permissions`)).data;
+        roles = (await api(await cookies()).get(`/users/${user.phone_number}/roles`)).data;
 
         // console.log(permissions);
         // console.log(roles);
@@ -63,7 +63,7 @@ export default async function Page(props: any){
                 <p className="text-sm">Accueil</p>
             </div>
             <Link href="/app/users" className="text-sm">/ Utilisateurs</Link>
-            <p className="text-sm">/ {user.participant_full_name}</p>
+            <p className="text-sm">/ {user.name}</p>
         </div>
         <div className="flex-1">
             <div className="flex flex-row w-full items-center justify-between mt-[10px]">

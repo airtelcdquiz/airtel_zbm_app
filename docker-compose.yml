@@ -1,0 +1,16 @@
+version: '3.8'
+
+services: 
+  airtel_quiz_zbm_school_app :
+    container_name: airtel_quiz_zbm_school_app
+    image: node:latest
+    tty: true
+    working_dir: /app
+    volumes:
+      - ./:/app
+    expose:
+      - 3000
+    command: >
+       bash -c "yarn install && yarn dev"
+    networks:
+      - shared-network

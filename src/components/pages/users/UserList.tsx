@@ -93,9 +93,9 @@ export default function UserList(){
         <div className='w-full divide-y divide-gray-300'>
         {
             users.map((user: User, index: number) => (
-            <Link key={index} href={`/app/users/${user.id}`} className='duration-300 hover:bg-accent flex items-center gap-[10px] px-[15px] py-[7px] cursor-pointer text-[13px] text-gray-700'>
-                <p className='w-[100px]'>{user.participant_phone}</p> 
-                <p className='flex-1'>{user.participant_full_name}</p>
+            <Link key={index} href={`/app/users/${user.phone_number}`} className='duration-300 hover:bg-accent flex items-center gap-[10px] px-[15px] py-[7px] cursor-pointer text-[13px] text-gray-700'>
+                <p className='w-[100px]'>{user.phone_number}</p> 
+                <p className='flex-1'>{user.name}</p>
             </Link>
             ))
         }

@@ -1,6 +1,6 @@
 const Redis = require('ioredis');
 const redis = new Redis({
-  host: '41.243.25.144',
+  host: 'ussd-redis',
   port: 6379,
 });
 

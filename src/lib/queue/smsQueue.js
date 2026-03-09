@@ -1,7 +1,7 @@
 const { Queue } = require('bullmq');
 const Redis = require('ioredis');
 
-const connection = new Redis('redis://41.243.25.144:6379');
+const connection = new Redis('redis://ussd-redis:6379');
 const smsQueue = new Queue('sms', { connection });
 
 (async () => {

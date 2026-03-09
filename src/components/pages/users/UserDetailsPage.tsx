@@ -32,7 +32,7 @@ export default function UserDetailsPage(props: UserDetailsPageProps){
         setActivationLoading(true);
         try {
             const endpoint = user.is_active ? 'deactivate' : 'activate';
-            const response = await api(cookies).post(`/users/${user.id}/${endpoint}`);
+            const response = await api(cookies).post(`/users/${user.phone_number}/${endpoint}`);
             setUser(response.data.user);
         } catch (error) {
             console.error('Erreur lors de la modification du statut:', error);
@@ -56,9 +56,9 @@ export default function UserDetailsPage(props: UserDetailsPageProps){
             <div className="mt-[20px]">
                 {activeTab === "general" && (
                     <div>
-                        <p>Nom Complet : {user.participant_full_name}</p>
-                        <p>Téléphone : {user.participant_phone}</p> 
-                        <p>Ecole : {props.school.schoolname}</p>
+                        <p>Nom Complet : {user.name}</p>
+                        <p>Téléphone : {user.phone_number}</p> 
+                        <p>Ecole : {props.school.code}</p>
                         <div className="mt-4">
                             <button
                                 onClick={handleActivationToggle}
@@ -89,10 +89,10 @@ export default function UserDetailsPage(props: UserDetailsPageProps){
                                             setSuperuserLoading(true);
                                             try {
                                                 if(userPermissions.is_superuser) {
-                                                    await api(cookies).post(`/users/${user.id}/unset_superuser`);
+                                                    await api(cookies).post(`/users/${user.phone_number}/unset_superuser`);
                                                     setUserPermissions(prev => ({ ...prev, is_superuser: false }));
                                                 } else {
-                                                    await api(cookies).post(`/users/${user.id}/set_superuser`); 
+                                                    await api(cookies).post(`/users/${user.phone_number}/set_superuser`); 
                                                     setUserPermissions(prev => ({ ...prev, is_superuser: true }));
                                                 }
                                             } finally {
@@ -117,7 +117,7 @@ export default function UserDetailsPage(props: UserDetailsPageProps){
                                                 const exec = async () => {
                                                     setRoleLoading(prev => ({ ...prev, [role.id]: true }));
                                                     try {
-                                                        await api(cookies).delete(`/users/${user.id}/roles/${role.id}`);
+                                                        await api(cookies).delete(`/users/${user.phone_number}/roles/${role.id}`);
                                                         setRoles(prev => prev.filter(r => r !== role.name));
                                                     } finally {
                                                         setRoleLoading(prev => ({ ...prev, [role.id]: false }));
@@ -128,7 +128,7 @@ export default function UserDetailsPage(props: UserDetailsPageProps){
                                                 const exec = async () => {
                                                     setRoleLoading(prev => ({ ...prev, [role.id]: true }));
                                                     try {
-                                                        await api(cookies).post(`/users/${user.id}/roles/${role.id}`);
+                                                        await api(cookies).post(`/users/${user.phone_number}/roles/${role.id}`);
                                                         setRoles(prev => [...prev, role.name]);
                                                     } finally {
                                                         setRoleLoading(prev => ({ ...prev, [role.id]: false }));
@@ -155,7 +155,7 @@ export default function UserDetailsPage(props: UserDetailsPageProps){
                                                 const exec = async () => {
                                                     setPermissionLoading(prev => ({ ...prev, [permission.id]: true }));
                                                     try {
-                                                        await api(cookies).delete(`/users/${user.id}/permissions/${permission.id}`);
+                                                        await api(cookies).delete(`/users/${user.phone_number}/permissions/${permission.id}`);
                                                         setPermissions(prev => prev.filter(p => p !== permission.name));
                                                     } finally {
                                                         setPermissionLoading(prev => ({ ...prev, [permission.id]: false }));
@@ -166,7 +166,7 @@ export default function UserDetailsPage(props: UserDetailsPageProps){
                                                 const exec = async () => {
                                                     setPermissionLoading(prev => ({ ...prev, [permission.id]: true }));
                                                     try {
-                                                        await api(cookies).post(`/users/${user.id}/permissions/${permission.id}`, {
+                                                        await api(cookies).post(`/users/${user.phone_number}/permissions/${permission.id}`, {
                                                             permission_id: permission.id
                                                         });
                                                         setPermissions(prev => [...prev, permission.name]);

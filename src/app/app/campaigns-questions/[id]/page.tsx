@@ -46,16 +46,16 @@ export default function EditCampaignsQuestionPage() {
         <p className="text-sm text-gray-500 m-0 mt-[15px]">Question</p>
         <textarea maxLength={160} name="campaign_question" value={form.campaign_question || ""} onChange={handleChange} className="w-full border p-2" placeholder="Question" />
         <p className="text-sm text-gray-500 m-0 mt-[15px]">Réponse 1</p>
-        <input name="campaign_value1" value={form.campaign_value1 || ""} onChange={handleChange} className="w-full border p-2" placeholder="Réponse 1" />
+        <input name="option_1" value={form.option_1 || ""} onChange={handleChange} className="w-full border p-2" placeholder="Réponse 1" />
         <p className="text-sm text-gray-500 m-0 mt-[15px]">Réponse 2</p>
-        <input name="campaign_value2" value={form.campaign_value2 || ""} onChange={handleChange} className="w-full border p-2" placeholder="Réponse 2" />
+        <input name="option_2" value={form.option_2 || ""} onChange={handleChange} className="w-full border p-2" placeholder="Réponse 2" />
         <p className="text-sm text-gray-500 m-0 mt-[15px]">Réponse 3</p>
-        <input name="campaign_value3" value={form.campaign_value3 || ""} onChange={handleChange} className="w-full border p-2" placeholder="Réponse 3" />
+        <input name="option_3" value={form.option_3 || ""} onChange={handleChange} className="w-full border p-2" placeholder="Réponse 3" />
         <p className="text-sm text-gray-500 m-0 mt-[15px]">Réponse 4</p>
-        <input name="campaign_value4" value={form.campaign_value4 || ""} onChange={handleChange} className="w-full border p-2" placeholder="Réponse 4" />
+        <input name="option_4" value={form.option_4 || ""} onChange={handleChange} className="w-full border p-2" placeholder="Réponse 4" />
         
         <p className="text-sm text-gray-500 m-0 mt-[15px]">Réponse correcte</p>
-        <input name="campaign_answer"  value={form.campaign_answer || ""} onChange={handleChange} className="w-full border p-2" placeholder="Numéro de la bonne réponse (1-4)" type="number" min="1" max="4" />
+        <input name="response"  value={form.response || ""} onChange={handleChange} className="w-full border p-2" placeholder="Numéro de la bonne réponse (1-4)" type="number" min="1" max="4" />
         <label className="flex items-center gap-2">
           <input type="checkbox" name="is_active" checked={!!form.is_active} onChange={e => setForm({ ...form, is_active: e.target.checked })} />
           Active

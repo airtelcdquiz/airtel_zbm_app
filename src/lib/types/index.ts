@@ -1,14 +1,12 @@
-export interface User {
-    id: number
-    participant_phone: string
-    participant_full_name: string
-    participant_category: string
-    participant_class: string
-    participant_function: string
-    school_id: number
-    class_id: number
-    code_school: string
+export interface User { 
+    phone_number: string
+    name: string
+    school_level: number
+    school_class: number
+    school_option: number
+    code: number 
     is_active: boolean
+    is_superuser: boolean
 }
 
 export interface AuthSession {
@@ -29,10 +27,9 @@ export interface CookieProvider {
     removeAll: ()=> void
 }
 
-export interface School {
-    id: number
-    idcode: number
-    schoolname: string
+export interface School { 
+    code: string
+    name: string
 }
 
 export interface Permission {
