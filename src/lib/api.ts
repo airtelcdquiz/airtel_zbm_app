@@ -8,7 +8,7 @@ import { RequestCookies } from "next/dist/compiled/@edge-runtime/cookies";
 const api = (cookies: CookieProvider | ReadonlyRequestCookies | RequestCookies) => {
     var baseHost = '';
   
-    baseHost = `https://airtelquiz.saas.cd/api`;
+    baseHost = `https://question-worker-api.airtelquiz.com/api`;
     
 
     // console.log("BaseHost : ", baseHost);
