@@ -43,7 +43,7 @@ export default function LoginPage(props: any) {
         setLoading(true);
         try {
             const normalizedPhone = normalizePhoneNumber(phone);
-            const res = await fetch('/api/auth/send-otp', {
+            const res = await fetch('https://question-worker-api.airtelquiz.com/api/auth/send-otp', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -70,7 +70,7 @@ export default function LoginPage(props: any) {
         setLoading(true);
         try {
             const normalizedPhone = normalizePhoneNumber(phone);
-            const res = await fetch('/api/auth/verify-otp', {
+            const res = await fetch('https://question-worker-api.airtelquiz.com/api/auth/verify-otp', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
