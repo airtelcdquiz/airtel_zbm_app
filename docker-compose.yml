@@ -3,7 +3,7 @@ version: '3.8'
 services: 
   airtel_quiz_zbm_school_app :
     container_name: airtel_quiz_zbm_school_app
-    image: node:latest
+    image: node:20-alpine
     tty: true
     working_dir: /app
     volumes:
