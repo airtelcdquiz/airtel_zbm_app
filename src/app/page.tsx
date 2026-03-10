@@ -1,7 +1,4 @@
-'use server'
-// import query from "@/lib/query";
-import {User} from '@/lib/types'
-
+'use server' 
  
 
 export default async function Home() {

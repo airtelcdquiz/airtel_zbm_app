@@ -10,7 +10,6 @@ const api = (cookies: CookieProvider | ReadonlyRequestCookies | RequestCookies) 
   
     baseHost = `https://question-worker-api.airtelquiz.com/api`;
     
-
     // console.log("BaseHost : ", baseHost);
     const axios_instance = axios.create({
         baseURL: `${baseHost}`,
@@ -20,7 +19,6 @@ const api = (cookies: CookieProvider | ReadonlyRequestCookies | RequestCookies) 
     })
 
     axios_instance.interceptors.request.use(config => {
-
         const access_token = cookies.get('session');
         console.log(access_token?.value)
         if (access_token != null) {
@@ -31,7 +29,6 @@ const api = (cookies: CookieProvider | ReadonlyRequestCookies | RequestCookies) 
         console.log(error)
         return error;
     })
-
 
     axios_instance.interceptors.response.use(result => {
         return result;
