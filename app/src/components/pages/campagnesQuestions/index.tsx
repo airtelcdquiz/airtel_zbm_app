@@ -96,11 +96,11 @@ export default function CampaignsQuestionsPage(props: CampaignsQuestionsPageProp
           {questions.map((q) => (
             <Link key={q.id} href={`/app/campaigns-questions/${q.id}`} className="flex flex-row hover:bg-gray-200 duration-300">
               <div className=" px-4 py-2 w-[80px]">{q.id}</div>
-              <div className=" px-4 py-2 flex-1 ">{q.campaign_question}</div>
-              <div className={` px-4 py-2 w-[150px] ${q.campaign_answer == 1 ? "bg-green-400" : ""}`}>{q.campaign_value1}</div>
-              <div className={` px-4 py-2 w-[150px] ${q.campaign_answer == 2 ? "bg-green-400" : ""}`}>{q.campaign_value2}</div>
-              <div className={` px-4 py-2 w-[150px] ${q.campaign_answer == 3 ? "bg-green-400" : ""}`}>{q.campaign_value3}</div>
-              <div className={` px-4 py-2 w-[150px] ${q.campaign_answer == 4 ? "bg-green-400" : ""}`}>{q.campaign_value4}</div>
+              <div className=" px-4 py-2 flex-1 ">{q.question}</div>
+              <div className={` px-4 py-2 w-[150px] ${q.response == 1 ? "bg-green-400" : ""}`}>{q.option_1}</div>
+              <div className={` px-4 py-2 w-[150px] ${q.response == 2 ? "bg-green-400" : ""}`}>{q.option_2}</div>
+              <div className={` px-4 py-2 w-[150px] ${q.response == 3 ? "bg-green-400" : ""}`}>{q.option_3}</div>
+              <div className={` px-4 py-2 w-[150px] ${q.response == 4 ? "bg-green-400" : ""}`}>{q.option_4}</div>
             </Link>
           ))}
           </>
