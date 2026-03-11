@@ -120,9 +120,9 @@ export default function ClassementsPage(){
                     {loading ? <div className="flex justify-center items-center w-full min-h-[300px] h-full"><Spinner color="primary" /></div> :
                    <>
                      {classements.map((classement) => (
-                        <div key={classement.participant_phone} className="duration-300 hover:bg-gray-100 flex flex-row w-full">
-                            <div className=" px-4 py-2 w-[150px]">{classement.participant_phone}</div>
-                            <div className=" px-4 py-2 flex-1 ">{classement.participant_full_name}</div>
+                        <div key={classement.phone_number} className="duration-300 hover:bg-gray-100 flex flex-row w-full">
+                            <div className=" px-4 py-2 w-[150px]">{classement.phone_number}</div>
+                            <div className=" px-4 py-2 flex-1 ">{classement.name}</div>
                             <div className=" px-4 py-2 w-[150px]">{classement.points}</div>
                             <div className=" px-4 py-2 flex-1">{classement.schoolname}</div>
                         </div>

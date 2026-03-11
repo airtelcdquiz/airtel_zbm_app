@@ -24,10 +24,10 @@ export type UserPermissions = {
 
 
 export interface Classement {
-  participant_full_name: string;
-  participant_phone: string;
+  name: string;
+  phone_number: string;
   points: number;
-  school_code: string;
+  code: string;
   schoolname: string;
 }
 
