@@ -10,7 +10,7 @@ services:
     expose :
       - "3000"
     command: >
-      sh -c "yarn build && yarn start"
+      sh -c "yarn install && yarn build && yarn start"
     networks:
       - dokploy-network
 
