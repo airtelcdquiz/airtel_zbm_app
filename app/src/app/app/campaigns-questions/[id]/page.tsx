@@ -44,7 +44,7 @@ export default function EditCampaignsQuestionPage() {
       <div className="w-full bg-white rounded overflow-x-scroll text-[13px] p-[20px]">
       <form onSubmit={handleSubmit} className="w-full">
         <p className="text-sm text-gray-500 m-0 mt-[15px]">Question</p>
-        <textarea maxLength={160} name="campaign_question" value={form.campaign_question || ""} onChange={handleChange} className="w-full border p-2" placeholder="Question" />
+        <textarea maxLength={160} name="question" value={form.question || ""} onChange={handleChange} className="w-full border p-2" placeholder="Question" />
         <p className="text-sm text-gray-500 m-0 mt-[15px]">Réponse 1</p>
         <input name="option_1" value={form.option_1 || ""} onChange={handleChange} className="w-full border p-2" placeholder="Réponse 1" />
         <p className="text-sm text-gray-500 m-0 mt-[15px]">Réponse 2</p>
