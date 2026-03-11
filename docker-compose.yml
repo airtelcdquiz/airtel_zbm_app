@@ -1,8 +1,8 @@
 version: '3.8'
 
 services:
-  airtel_quiz_zbm_school_app:
-    container_name: airtel_quiz_zbm_school_app
+  prod_airtel_quiz_zbm_school_app:
+    container_name: prod_airtel_quiz_zbm_school_app
     image: node:20-alpine
     working_dir: /app
     volumes:
@@ -10,7 +10,7 @@ services:
     expose :
       - "3000"
     command: >
-      sh -c "npm install && npm run dev"
+      sh -c "yarn build && yarn start"
     networks:
       - dokploy-network
 
