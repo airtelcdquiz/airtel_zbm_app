@@ -1,4 +1,4 @@
-const Redis = require('ioredis');
+import Redis from 'ioredis';
 
 // Connexion créée à l'appel (et non au chargement du module) pour que l'absence
 // de REDIS_URL remonte une erreur explicite au lieu de se replier

@@ -8,7 +8,7 @@ import { requireEnv } from './lib/env';
 export async function middleware(req: NextRequest) { 
   const JWT_SECRET = requireEnv('JWT_SECRET');
   const session = req.cookies.get("session"); 
-  var res: NextResponse = NextResponse.next();
+  let res: NextResponse = NextResponse.next();
 
   if (session === undefined) {
     res = NextResponse.redirect(new URL('/login', req.url));

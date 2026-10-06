@@ -2,9 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-  experimental: {
-    serverComponentsExternalPackages: ['bullmq'],
-  }
+  // Renommé depuis `experimental.serverComponentsExternalPackages` (Next 15).
+  serverExternalPackages: ['bullmq'],
 };
 
 export default nextConfig;

@@ -6,18 +6,18 @@ import React from "react";
 import { HomeIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 export default async function Page(props: any){
-    var user_permissions: Permissions | null = null;
+    let user_permissions: Permissions | null = null;
 
     try{
         user_permissions = (await api(await cookies()).get("/me/permissions")).data 
         if(user_permissions === null || !user_permissions.is_superuser){ return <p>401</p> }
     }catch(e){}
 
-    var user: User | null = null;
-    var school: School | null = null; 
+    let user: User | null = null;
+    let school: School | null = null; 
 
-    var roles: string[] = [];
-    var permissions: string[] = [];
+    let roles: string[] = [];
+    let permissions: string[] = [];
 
     try{
         const { id } = await props.params;
@@ -42,8 +42,8 @@ export default async function Page(props: any){
         console.log(e);
     }
 
-    var all_permissions: Permission[] = [];
-    var all_roles: Role[] = [];
+    let all_permissions: Permission[] = [];
+    let all_roles: Role[] = [];
 
     try{
         all_permissions = (await api(await cookies()).get(`/permissions`)).data;
@@ -67,7 +67,7 @@ export default async function Page(props: any){
         </div>
         <div className="flex-1">
             <div className="flex flex-row w-full items-center justify-between mt-[10px]">
-                <p className="text-2xl font-bold">Détails de l'utilisateur</p> 
+                <p className="text-2xl font-bold">Détails de l&apos;utilisateur</p> 
             </div>
         </div>
         <UserDetailsPage user={user} user_permissions={user_permissions} school={school} permissions={permissions} roles={roles} all_permissions={all_permissions} all_roles={all_roles} />

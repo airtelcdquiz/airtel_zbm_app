@@ -10,7 +10,7 @@ interface AllowedLayoutProps {
     children: React.ReactNode
 }
 export default async function AllowedLayout(props : AllowedLayoutProps){
-    var isAllowed = false 
+    let isAllowed = false 
     const permissions: Permissions = (await api(await cookies()).get("/me/permissions")).data 
     if(props.is_superuser === true && permissions.is_superuser === true) isAllowed = true
     if(props.roles.length > 0 && permissions.roles.find(r => props.roles.includes(r.name))) isAllowed = true
@@ -21,6 +21,6 @@ export default async function AllowedLayout(props : AllowedLayoutProps){
     return <div className="flex flex-col items-center justify-center w-full h-full">
         {/* <img src="/images/airtel-french-logo.svg" alt="logo" className="w-[200px] mb-8" /> */}
         <div className="text-2xl font-bold text-red-500">Accès non autorisé</div>
-        <div className="text-gray-500 mt-2">Vous n'avez pas la permission d'accéder à cette page</div>
+        <div className="text-gray-500 mt-2">Vous n&apos;avez pas la permission d&apos;accéder à cette page</div>
     </div>
 }
