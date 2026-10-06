@@ -19,7 +19,7 @@ const smsSend = async (props) => {
     await bulkSMS.add(data);
 }
 
-// const redis = new Redis(process.env.REDIS_URL || 'redis://41.243.25.144:6379');
+// const redis = new Redis(process.env.REDIS_URL);
 
 // export async function enqueueSms(props) {
 //   await redis.lpush('bulksms', JSON.stringify(props));

@@ -1,7 +1,7 @@
-const { Queue } = require('bullmq');
-const Redis = require('ioredis');
+import { Queue } from 'bullmq';
+import Redis from 'ioredis';
 
-const connection = new Redis('redis://ussd-redis:6379');
+const connection = new Redis(process.env.REDIS_URL);
 const smsQueue = new Queue('sms', { connection });
 
 (async () => {

@@ -11,7 +11,7 @@ export default  async function DashboardLayout({children}: {children: React.Reac
 
     
     const user: User|undefined = undefined ;
-    var permissions : Permissions = {
+    let permissions : Permissions = {
         direct_permissions: [],
         is_superuser: false,
         roles: []

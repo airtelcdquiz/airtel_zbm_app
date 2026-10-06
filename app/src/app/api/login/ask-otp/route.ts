@@ -7,13 +7,13 @@ import redisenQueue from '@/lib/queue/redisenQueue'
 
 export async function POST(req: Request) {
     const body = await req.json(); //  Utiliser .json() pour lire le corps
-    const sql_query = "SELECT * FROM `userLogins` WHERE `participant_phone` = '" + normalizePhone(body.tel) + "'"
-    // Exemple de requête MySQL
-    const [rows] = await query(sql_query);
+    const [rows] = await query(
+        'SELECT * FROM `userLogins` WHERE `participant_phone` = ?',
+        [normalizePhone(body.tel)]
+    );
     if (JSON.parse(JSON.stringify(rows)).length === 0) {
         return new Response(JSON.stringify([
-            "No Active account found for this number",
-            sql_query
+            "No Active account found for this number"
         ]), {
             status: 401,
             headers: {

@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   prod_airtel_quiz_zbm_school_app:
     container_name: prod_airtel_quiz_zbm_school_app
@@ -7,6 +5,23 @@ services:
     working_dir: /app
     volumes:
       - ./app/:/app
+    # Variables transmises au conteneur, donc disponibles pour `yarn build`
+    # (indispensable : NEXT_PUBLIC_* est inlinée au build) et `yarn start`.
+    # Leurs valeurs viennent de l'environnement de Compose : interface Dokploy
+    # en déploiement, ou `.env` à côté de ce fichier en local (cf. .env.example).
+    environment:
+      - NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - JWT_SECRET=${JWT_SECRET}
+      - REDIS_URL=${REDIS_URL}
+      - SMPP_HOST=${SMPP_HOST}
+      - SMPP_PORT=${SMPP_PORT}
+      - SMPP_SYSTEM_ID=${SMPP_SYSTEM_ID}
+      - SMPP_PASSWORD=${SMPP_PASSWORD}
     expose :
       - "3000"
     command: >
