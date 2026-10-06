@@ -23,7 +23,7 @@ export async function middleware(req: NextRequest) {
       }
 
       // Vérifier la session dans la base de données
-      const [rows] = await query(`SELECT * FROM sessions WHERE token = "${session.value}"`);
+      const [rows] = await query('SELECT * FROM sessions WHERE token = ?', [session.value]);
       const sessions: AuthSession[] = JSON.parse(JSON.stringify(rows));
       
       if (sessions.length === 0) {
