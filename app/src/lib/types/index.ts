@@ -9,13 +9,6 @@ export interface User {
     is_superuser: boolean
 }
 
-export interface AuthSession {
-    token: string
-    create_at: string
-    expire_at: string
-}
-
-
 export interface CookieResponse {
     name: string
     value: any

@@ -17,11 +17,6 @@ export function requireEnv(name: string): string {
     return value;
 }
 
-export function optionalEnv(name: string, fallback: string): string {
-    const value = process.env[name];
-    return value === undefined || value === '' ? fallback : value;
-}
-
 /** URL de base de l'API backend, avec le préfixe `/api`. */
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? '';
 
