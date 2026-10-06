@@ -1,0 +1,5 @@
+# Variables d'environnement injectées au déploiement (Dokploy) ou en local.
+# Ne jamais committer : seul le modèle `.env.example` est versionné.
+.env
+.env.*
+!.env.example
