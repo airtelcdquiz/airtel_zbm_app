@@ -3,10 +3,10 @@ import { NextResponse, NextRequest } from 'next/server';
 import query from './lib/query';
 import { AuthSession } from './lib/types';
 import jwt from 'jsonwebtoken';
-
-const JWT_SECRET = 'votre_cle_secrete_jwt'; // À changer en production
+import { requireEnv } from './lib/env';
 
 export async function middleware(req: NextRequest) { 
+  const JWT_SECRET = requireEnv('JWT_SECRET');
   const session = req.cookies.get("session"); 
   var res: NextResponse = NextResponse.next();
 

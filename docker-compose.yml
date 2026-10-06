@@ -7,6 +7,11 @@ services:
     working_dir: /app
     volumes:
       - ./app/:/app
+    # `app/.env` doit exister (cf. app/.env.example) : il est chargé ici pour le
+    # shell du conteneur et, comme il est monté dans /app, Next.js le lit aussi
+    # au build (nécessaire pour les variables NEXT_PUBLIC_*).
+    env_file:
+      - ./app/.env
     expose :
       - "3000"
     command: >

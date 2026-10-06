@@ -2,13 +2,12 @@ import axios from "axios";
 import { CookieProvider } from "./types";
 import { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
 import { RequestCookies } from "next/dist/compiled/@edge-runtime/cookies";
+import { requireApiBaseUrl } from "./env";
 
 
 
 const api = (cookies: CookieProvider | ReadonlyRequestCookies | RequestCookies) => {
-    var baseHost = '';
-  
-    baseHost = `https://question-worker-api.airtelquiz.com/api`;
+    const baseHost = requireApiBaseUrl();
     
     // console.log("BaseHost : ", baseHost);
     const axios_instance = axios.create({
