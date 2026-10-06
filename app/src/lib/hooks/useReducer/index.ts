@@ -5,7 +5,7 @@ import reducer from "./reducer";
 const useReducer = (indexs:string[])=>{
     const datas = useAppSelector(state=> state.reduceStore.datas.filter( (e:any)=> indexs.includes(e.index)));
     const dispatch = useAppDispatch();
-    const store = (index:string, payload:{})=>{
+    const store = (index:string, payload:object)=>{
         dispatch(reducer.actions.store({index, payload}));
     }
     const drop = (index:string)=>{

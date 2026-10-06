@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import api from "@/lib/api";
+import cookies from "@/lib/cookies";
 
 export default function NewCampaignsQuestionPage() {
   const router = useRouter();
@@ -13,7 +14,7 @@ export default function NewCampaignsQuestionPage() {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    await api().post("/campaigns-questions", form);
+    await api(cookies).post("/campaigns-questions", form);
     router.push("/app/campaigns-questions");
   };
 

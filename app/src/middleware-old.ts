@@ -8,7 +8,7 @@ import { requireEnv } from './lib/env';
 export async function middleware(req: NextRequest) { 
   const JWT_SECRET = requireEnv('JWT_SECRET');
   const session = req.cookies.get("session"); 
-  var res: NextResponse = NextResponse.next();
+  let res: NextResponse = NextResponse.next();
 
   if (session === undefined) {
     res = NextResponse.redirect(new URL('/login', req.url));
@@ -23,7 +23,7 @@ export async function middleware(req: NextRequest) {
       }
 
       // Vérifier la session dans la base de données
-      const [rows] = await query(`SELECT * FROM sessions WHERE token = "${session.value}"`);
+      const [rows] = await query('SELECT * FROM sessions WHERE token = ?', [session.value]);
       const sessions: AuthSession[] = JSON.parse(JSON.stringify(rows));
       
       if (sessions.length === 0) {
