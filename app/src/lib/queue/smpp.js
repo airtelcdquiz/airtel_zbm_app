@@ -3,7 +3,7 @@ import smpp from 'smpp';
 const sendSMPP = (phone, message) => {
 
 
-  const session = new smpp.Session({ host: 'messaging.airtel.cd', port: 9001, debug: true, auto_enquire_link_period: 10000, connectTimeout: 20000 });
+  const session = new smpp.Session({ host: process.env.SMPP_HOST, port: Number(process.env.SMPP_PORT || 9001), debug: true, auto_enquire_link_period: 10000, connectTimeout: 20000 });
 
   session.on('error', err => {
     console.error('SMPP session error:', err);
@@ -12,9 +12,9 @@ const sendSMPP = (phone, message) => {
   session.on('connect', () => {
     console.log(`Session SMPP connectée`);
     session.bind_transceiver({
-      system_id: 'AirtelQuiz',
-      password: '@irtElq1',
-      
+      system_id: process.env.SMPP_SYSTEM_ID,
+      password: process.env.SMPP_PASSWORD,
+
     }, (pdu) => {
       if (pdu.command_status === 0) {
         console.log(`Session SMPP liée avec succès`);
@@ -25,8 +25,8 @@ const sendSMPP = (phone, message) => {
   });
 
   // session.bind_transceiver({
-  //   system_id: 'AirtelQuiz',
-  //   password: '@irtElq1'
+  //   system_id: process.env.SMPP_SYSTEM_ID,
+  //   password: process.env.SMPP_PASSWORD
   // }, function (pdu) {
   //   if (pdu.command_status === 0) {
 

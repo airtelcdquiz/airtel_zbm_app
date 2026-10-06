@@ -7,11 +7,11 @@ import jwt from 'jsonwebtoken';
 import query from "@/lib/query";
 import { AuthSession } from "@/lib/types";
 import api from "@/lib/api";
-
-const JWT_SECRET = 'votre_cle_secrete_jwt'; // À changer en production
+import { requireEnv } from "@/lib/env";
 
 export default async function AuthSessionWrapper(props: any){
-    
+
+    const JWT_SECRET = requireEnv('JWT_SECRET');
     const _cookies = await cookies()
     const session = _cookies.get("session"); 
 
