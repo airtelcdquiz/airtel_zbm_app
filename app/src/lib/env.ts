@@ -9,14 +9,6 @@
  * `requireEnv`.
  */
 
-export function requireEnv(name: string): string {
-    const value = process.env[name];
-    if (value === undefined || value === '') {
-        throw new Error(`Variable d'environnement manquante : ${name}`);
-    }
-    return value;
-}
-
 /** URL de base de l'API backend, avec le préfixe `/api`. */
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? '';
 
