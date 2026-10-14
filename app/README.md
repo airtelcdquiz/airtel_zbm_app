@@ -15,8 +15,6 @@ cp ../.env.example .env
 | Variable | Rôle |
 | --- | --- |
 | `NEXT_PUBLIC_API_BASE_URL` | URL de base de l'API backend (`airtel_zbm_api`), préfixe `/api` inclus. Inlinée au build. |
-| `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME` | Base MySQL lue directement par le dashboard (tables `sessions`, `userLogins`). |
-| `JWT_SECRET` | Secret de vérification des JWT de session. |
 | `REDIS_URL` | Redis des files d'attente SMS (Bull / BullMQ). |
 | `SMPP_HOST`, `SMPP_PORT`, `SMPP_SYSTEM_ID`, `SMPP_PASSWORD` | Passerelle SMPP Airtel. |
 

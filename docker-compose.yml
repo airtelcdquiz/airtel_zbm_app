@@ -11,12 +11,6 @@ services:
     # en déploiement, ou `.env` à côté de ce fichier en local (cf. .env.example).
     environment:
       - NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL}
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_NAME=${DB_NAME}
-      - JWT_SECRET=${JWT_SECRET}
       - REDIS_URL=${REDIS_URL}
       - SMPP_HOST=${SMPP_HOST}
       - SMPP_PORT=${SMPP_PORT}
