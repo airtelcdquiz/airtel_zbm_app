@@ -1,4 +1,5 @@
 import UserDetailsPage from "@/components/pages/users/UserDetailsPage";
+import AttachedSchoolsManager from "@/components/pages/users/AttachedSchoolsManager";
 import api from "@/lib/api";
 import { Permissions, Role, School, User, Permission } from "@/lib/types";
 import { cookies } from "next/headers";
@@ -95,5 +96,6 @@ export default async function Page(props: any){
             </div>
         </div>
         <UserDetailsPage user={user} user_permissions={user_permissions} school={safeSchool} permissions={permissions} roles={roles} all_permissions={all_permissions} all_roles={all_roles} />
+        <AttachedSchoolsManager phoneNumber={user.phone_number} />
     </div>
 }
