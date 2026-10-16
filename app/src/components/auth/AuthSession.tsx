@@ -31,6 +31,8 @@ export default async function AuthSessionWrapper(props: any){
     try {
         status = (await api(_cookies).get('/auth/check-session')).status;
     } catch (e: any) {
+        console.log("Apparement le check de securité echoue...");
+        console.log(e?.response)
         status = e?.response?.status;
         if (status === undefined) {
             // Pas de réponse HTTP du tout (DNS, TCP, timeout).

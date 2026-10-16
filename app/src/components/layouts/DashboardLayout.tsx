@@ -19,6 +19,7 @@ export default  async function DashboardLayout({children}: {children: React.Reac
 
    
     try{
+        console.log("Nous verifions les permissions du user")
         permissions = (await api(await cookies()).get("/me/permissions")).data 
     }catch(e){
         console.log(e)
