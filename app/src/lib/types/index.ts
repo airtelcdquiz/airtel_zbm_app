@@ -5,6 +5,7 @@ export interface User {
     school_class: number
     school_option: number
     code: number 
+    school_code: number
     is_active: boolean
     is_superuser: boolean
 }
