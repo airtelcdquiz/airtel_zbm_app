@@ -79,7 +79,7 @@ export default async function Page(props: any){
         all_roles = (await api(await cookies()).get(`/roles`)).data;
     }catch(e){}
 
-    return <div className="w-full h-full pr-[30px]">
+    return <div className="w-full h-full overflow-y-auto pr-[30px] pb-10">
         <div className="flex flex-row w-full items-center mt-[30px] gap-3">
             <div className="flex flex-row items-center gap-2 cursor-pointer">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-3">
