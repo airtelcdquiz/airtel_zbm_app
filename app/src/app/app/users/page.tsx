@@ -1,5 +1,6 @@
-import UserList from "@/components/pages/users/UserList"
+import { redirect } from "next/navigation"
 
-export default async function Page(props: any){
-    return   <UserList />
+// La liste des utilisateurs est séparée en « Joueurs » et « Administrateurs ».
+export default function Page(){
+    redirect("/app/players")
 }

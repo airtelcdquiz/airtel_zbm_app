@@ -58,7 +58,11 @@ export default function UserDetailsPage(props: UserDetailsPageProps){
                     <div>
                         <p>Nom Complet : {user.name}</p>
                         <p>Téléphone : {user.phone_number}</p> 
-                        <p>Ecole : {props.school.code}</p>
+                        <p>École : {props.school.name && props.school.name !== "—" ? `${props.school.name} (${props.school.code})` : props.school.code}</p>
+                        <p>Section : {user.level_label || "—"}</p>
+                        <p>Classe : {user.class_label || "—"}</p>
+                        {user.level_label === "Humanités" && <p>Option : {user.option_label || "—"}</p>}
+                        <p>Inscrit le : {user.created_at ? new Date(user.created_at).toLocaleString("fr-FR", { timeZone: "Africa/Kinshasa" }) : "—"}</p>
                         <div className="mt-4">
                             <button
                                 onClick={handleActivationToggle}
