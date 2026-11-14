@@ -69,7 +69,7 @@ const iconTrophy = (
 
 export default async function Page(){
     const [nbUsers, nbQuiz, nbDocs] = await Promise.all([
-        fetchTotal("/users?page=1"),
+        fetchTotal("/players?page=1&per_page=1"),
         fetchTotal("/quiz?page=1"),
         fetchTotal("/documents?page=1"),
     ]);
@@ -86,7 +86,7 @@ export default async function Page(){
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                <StatCard label="Utilisateurs" value={fmt(nbUsers)} href="/app/users">{iconUsers}</StatCard>
+                <StatCard label="Joueurs" value={fmt(nbUsers)} href="/app/players">{iconUsers}</StatCard>
                 <StatCard label="Questions de campagne" value={fmt(nbQuiz)} href="/app/campaigns-questions">{iconQuiz}</StatCard>
                 <StatCard label="Documents" value={fmt(nbDocs)} href="/app/documents">{iconDocs}</StatCard>
             </div>
@@ -95,7 +95,7 @@ export default async function Page(){
                 Accès rapide
             </h2>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                <QuickLink label="Utilisateurs" href="/app/users">{iconUsers}</QuickLink>
+                <QuickLink label="Joueurs" href="/app/players">{iconUsers}</QuickLink>
                 <QuickLink label="Questions de campagne" href="/app/campaigns-questions">{iconQuiz}</QuickLink>
                 <QuickLink label="Classements" href="/app/classements">{iconTrophy}</QuickLink>
                 <QuickLink label="Documents" href="/app/documents">{iconDocs}</QuickLink>

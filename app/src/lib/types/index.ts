@@ -8,6 +8,11 @@ export interface User {
     school_code: number
     is_active: boolean
     is_superuser: boolean
+    level_label?: string
+    class_label?: string
+    option_label?: string
+    created_at?: string | null
+    is_subscribed?: boolean
 }
 
 export interface CookieResponse {
@@ -42,4 +47,36 @@ export interface Permissions {
     direct_permissions: string[],
     is_superuser: boolean,
     roles: Role[]
+}
+export interface Player {
+    phone_number: string
+    name: string
+    school_code: string | null
+    school_name: string | null
+    school_level: number | null
+    school_class: number | null
+    school_option: number | null
+    level_label: string
+    class_label: string
+    option_label: string
+    is_subscribed: boolean
+    is_active: boolean
+    created_at: string | null
+    questions_received: number
+    answers: number
+    correct_answers: number
+    points: number
+}
+
+export interface Admin {
+    phone_number: string
+    name: string
+    school_code: string | null
+    school_name: string | null
+    is_superuser: boolean
+    type: string
+    roles: string[]
+    attached_schools: string[]
+    is_active: boolean
+    created_at: string | null
 }
