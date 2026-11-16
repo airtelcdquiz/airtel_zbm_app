@@ -1,14 +1,18 @@
 services:
   prod_airtel_quiz_zbm_school_app:
     container_name: prod_airtel_quiz_zbm_school_app
-    image: node:20-alpine
-    working_dir: /app
-    volumes:
-      - ./app/:/app
-    # Variables transmises au conteneur, donc disponibles pour `yarn build`
-    # (indispensable : NEXT_PUBLIC_* est inlinée au build) et `yarn start`.
-    # Leurs valeurs viennent de l'environnement de Compose : interface Dokploy
-    # en déploiement, ou `.env` à côté de ce fichier en local (cf. .env.example).
+    # L'application est compilée dans l'image (app/Dockerfile). Chaque
+    # déploiement reconstruit l'image, et Compose recrée alors le conteneur
+    # avec le nouveau code. Si le build échoue, l'ancien conteneur reste actif.
+    build:
+      context: ./app
+      args:
+        # NEXT_PUBLIC_* est inlinée dans le code au moment du build.
+        - NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL}
+    image: local/airtel-zbm-app:prod
+    restart: unless-stopped
+    # Valeurs issues de l'environnement de Compose : interface Dokploy en
+    # déploiement, ou `.env` à côté de ce fichier en local (cf. .env.example).
     environment:
       - NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL}
       - REDIS_URL=${REDIS_URL}
@@ -16,10 +20,8 @@ services:
       - SMPP_PORT=${SMPP_PORT}
       - SMPP_SYSTEM_ID=${SMPP_SYSTEM_ID}
       - SMPP_PASSWORD=${SMPP_PASSWORD}
-    expose :
+    expose:
       - "3000"
-    command: >
-      sh -c "yarn install && yarn build && yarn start"
     networks:
       - dokploy-network
 
