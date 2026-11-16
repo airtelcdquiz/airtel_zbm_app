@@ -2,23 +2,19 @@
 import api from '@/lib/api';
 import cookies from '@/lib/cookies';
 import { Player } from '@/lib/types';
-import { Pagination } from '@heroui/pagination';
-import { Spinner } from '@heroui/spinner';
 import Link from 'next/link';
 import React from 'react';
+import { Download, Users } from 'lucide-react';
+import {
+    Alert, Avatar, Badge, Button, Card, EmptyState, PageBody, PageHeader, Pagination, SearchInput, Select, SkeletonRows,
+    fmtDate, fmtInt, fmtPhone, tableClass, tdClass, thClass, theadClass, trClass,
+} from '@/components/ui/kit';
 
 interface Opt { value: number | string; label: string }
 interface FilterSchool { code: string; name: string }
 
 const CLASSES: Opt[] = [1, 2, 3, 4, 5, 6, 7, 8].map(n => ({ value: n, label: n === 1 ? '1ère année' : `${n}ème année` }));
 const PER_PAGE = 20;
-
-const formatDate = (iso: string | null) => {
-    if (!iso) return '—';
-    return new Date(iso).toLocaleString('fr-FR', {
-        timeZone: 'Africa/Kinshasa', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit',
-    });
-};
 
 export default function PlayerList() {
     const [players, setPlayers] = React.useState<Player[]>([]);
@@ -39,16 +35,14 @@ export default function PlayerList() {
     const [klass, setKlass] = React.useState('');
     const [option, setOption] = React.useState('');
     const [sort, setSort] = React.useState('recent');
-    const searchRef = React.useRef<HTMLInputElement>(null);
 
     const params = () => {
-        const p: Record<string, string | number> = {};
+        const p: Record<string, string | number> = { sort };
         if (search) p.search = search;
         if (schoolCode) p.school_code = schoolCode;
         if (level) p.school_level = level;
         if (klass) p.school_class = klass;
         if (option) p.school_option = option;
-        p.sort = sort;
         return p;
     };
 
@@ -70,10 +64,7 @@ export default function PlayerList() {
     React.useEffect(() => {
         (async () => {
             try {
-                const [f, l] = await Promise.all([
-                    api(cookies).get('/statistics/filters'),
-                    api(cookies).get('/players/labels'),
-                ]);
+                const [f, l] = await Promise.all([api(cookies).get('/statistics/filters'), api(cookies).get('/players/labels')]);
                 setSchools(f.data.schools ?? []);
                 setLevels(l.data.levels ?? []);
                 setOptions(l.data.options ?? []);
@@ -82,6 +73,7 @@ export default function PlayerList() {
     }, []);
 
     // Tout changement de filtre repart de la page 1.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     React.useEffect(() => { setPage(1); load(1); }, [search, schoolCode, level, klass, option, sort]);
 
     const exportExcel = async () => {
@@ -102,111 +94,116 @@ export default function PlayerList() {
         }
     };
 
-    const resetFilters = () => {
-        setSchoolCode(''); setLevel(''); setKlass(''); setOption(''); setSort('recent');
-        setSearch(''); if (searchRef.current) searchRef.current.value = '';
-    };
-
-    const sel = "rounded-md border border-gray-300 bg-white px-2 py-1.5 text-[13px] outline-none focus:border-[#EC2027]";
+    const resetFilters = () => { setSchoolCode(''); setLevel(''); setKlass(''); setOption(''); setSort('recent'); setSearch(''); };
     const hasFilters = [schoolCode, level, klass, option, search].some(Boolean);
 
-    return <div className='w-full h-full overflow-y-auto pr-[40px] pl-[10px]'>
-        <div className="flex flex-row w-full items-center mt-[30px] gap-3 text-[13px]">
-            <Link href="/app" className="cursor-pointer">Accueil</Link>
-            <span>/ Joueurs</span>
-        </div>
+    return (
+        <PageBody>
+            <PageHeader
+                crumbs={[{ label: 'Tableau de bord', href: '/app' }, { label: 'Joueurs' }]}
+                title="Joueurs"
+                description={loading && !total ? 'Chargement…' : `${fmtInt(total)} joueur${total > 1 ? 's' : ''}${hasFilters ? ' correspondant aux filtres' : ' inscrits'}`}
+                actions={
+                    <Button variant="secondary" onClick={exportExcel} loading={exporting} disabled={total === 0}>
+                        {!exporting && <Download />} {exporting ? 'Export en cours…' : 'Exporter en Excel'}
+                    </Button>
+                }
+            />
+            {error && <Alert className="mb-4">{error}</Alert>}
 
-        <div className="flex flex-row flex-wrap items-end justify-between gap-3 mt-[10px]">
-            <div>
-                <p className="text-2xl font-bold">Joueurs</p>
-                <p className="text-[13px] text-gray-500">{total.toLocaleString('fr-FR')} joueur{total > 1 ? 's' : ''}{hasFilters ? ' (filtré)' : ''}</p>
-            </div>
-            <button onClick={exportExcel} disabled={exporting}
-                className="flex items-center gap-2 rounded bg-[#1D6F42] px-4 py-2 text-[13px] font-bold text-white hover:bg-[#185C37] disabled:opacity-60">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                </svg>
-                {exporting ? 'Export en cours…' : 'Exporter en Excel'}
-            </button>
-        </div>
-        {error && <p className="mt-2 text-[13px] text-red-600">{error}</p>}
-
-        <div className='w-full mt-[20px] bg-white text-[13px] mb-[20px] p-[20px] rounded-xl shadow-xl'>
-            {/* Recherche + filtres */}
-            <div className="flex flex-row flex-wrap items-center gap-2 mb-3">
-                <div className='relative flex flex-1 min-w-[220px] items-center border-b border-gray-300 px-2 py-1.5'>
-                    <input ref={searchRef} type="text" placeholder="Rechercher par nom ou téléphone…"
-                        onKeyDown={(e) => { if (e.key === 'Enter') setSearch(searchRef.current?.value ?? ''); }}
-                        className="w-full bg-transparent outline-none" />
-                    <svg onClick={() => setSearch(searchRef.current?.value ?? '')} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 cursor-pointer text-gray-400">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                    </svg>
+            <Card>
+                <div className="space-y-3 border-b border-ink-100 p-4">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                        <SearchInput value={search} onSearch={setSearch} placeholder="Nom ou numéro de téléphone" className="sm:max-w-sm sm:flex-1" />
+                        <div className="flex items-center gap-2 sm:ml-auto">
+                            {hasFilters && <Button variant="ghost" size="sm" onClick={resetFilters}>Réinitialiser</Button>}
+                            <Select value={sort} onChange={e => setSort(e.target.value)} aria-label="Tri" className="w-full sm:w-44">
+                                <option value="recent">Plus récents</option>
+                                <option value="score">Meilleur score</option>
+                                <option value="name">Nom (A → Z)</option>
+                            </Select>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
+                        {schools.length > 1 && (
+                            <Select value={schoolCode} onChange={e => setSchoolCode(e.target.value)} aria-label="École">
+                                <option value="">École : toutes</option>
+                                {schools.map(s => <option key={s.code} value={s.code}>{s.name}</option>)}
+                            </Select>
+                        )}
+                        <Select value={level} onChange={e => { setLevel(e.target.value); if (e.target.value === '1') setOption(''); }} aria-label="Section">
+                            <option value="">Section : toutes</option>
+                            {levels.map(l => <option key={l.value} value={String(l.value)}>{l.label}</option>)}
+                        </Select>
+                        <Select value={klass} onChange={e => setKlass(e.target.value)} aria-label="Classe">
+                            <option value="">Classe : toutes</option>
+                            {CLASSES.filter(c => level !== '2' || Number(c.value) <= 4).map(c => <option key={c.value} value={String(c.value)}>{c.label}</option>)}
+                        </Select>
+                        <Select value={option} onChange={e => setOption(e.target.value)} aria-label="Option" disabled={level === '1'}>
+                            <option value="">{level === '1' ? 'Option : —' : 'Option : toutes'}</option>
+                            {options.map(o => <option key={o.value} value={String(o.value)}>{o.label}</option>)}
+                        </Select>
+                    </div>
                 </div>
-                {schools.length > 1 && (
-                    <select className={sel} value={schoolCode} onChange={e => setSchoolCode(e.target.value)} aria-label="École">
-                        <option value="">Toutes les écoles</option>
-                        {schools.map(s => <option key={s.code} value={s.code}>{s.name}</option>)}
-                    </select>
-                )}
-                <select className={sel} value={level} onChange={e => { setLevel(e.target.value); if (e.target.value !== '2') setOption(''); }} aria-label="Section">
-                    <option value="">Toutes les sections</option>
-                    {levels.map(l => <option key={l.value} value={String(l.value)}>{l.label}</option>)}
-                </select>
-                <select className={sel} value={klass} onChange={e => setKlass(e.target.value)} aria-label="Classe">
-                    <option value="">Toutes les classes</option>
-                    {CLASSES.filter(c => level !== '2' || Number(c.value) <= 4).map(c => <option key={c.value} value={String(c.value)}>{c.label}</option>)}
-                </select>
-                {level !== '1' && (
-                    <select className={sel} value={option} onChange={e => setOption(e.target.value)} aria-label="Option">
-                        <option value="">Toutes les options</option>
-                        {options.map(o => <option key={o.value} value={String(o.value)}>{o.label}</option>)}
-                    </select>
-                )}
-                <select className={sel} value={sort} onChange={e => setSort(e.target.value)} aria-label="Tri">
-                    <option value="recent">Plus récents</option>
-                    <option value="score">Meilleur score</option>
-                    <option value="name">Nom (A→Z)</option>
-                </select>
-                {hasFilters && <button onClick={resetFilters} className="text-[13px] text-gray-500 underline">Réinitialiser</button>}
-            </div>
 
-            <div className="overflow-x-auto">
-                <table className="w-full min-w-[900px] text-left">
-                    <thead>
-                        <tr className="font-bold border-b border-gray-200">
-                            <th className="px-3 py-2">Téléphone</th>
-                            <th className="px-3 py-2">Nom</th>
-                            <th className="px-3 py-2">École</th>
-                            <th className="px-3 py-2">Section</th>
-                            <th className="px-3 py-2">Classe</th>
-                            <th className="px-3 py-2">Option</th>
-                            <th className="px-3 py-2 text-right">Score</th>
-                            <th className="px-3 py-2 text-right">Bonnes rép.</th>
-                            <th className="px-3 py-2">Inscrit le</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200 text-gray-700">
-                        {loading ? (
-                            <tr><td colSpan={9} className="py-16 text-center"><Spinner color="primary" /></td></tr>
-                        ) : players.length === 0 ? (
-                            <tr><td colSpan={9} className="py-12 text-center text-gray-400">Aucun joueur</td></tr>
-                        ) : players.map(p => (
-                            <tr key={p.phone_number} className="duration-200 hover:bg-gray-50">
-                                <td className="px-3 py-2 whitespace-nowrap"><Link href={`/app/users/${p.phone_number}`} className="hover:underline">{p.phone_number}</Link></td>
-                                <td className="px-3 py-2"><Link href={`/app/users/${p.phone_number}`} className="hover:underline">{p.name}</Link></td>
-                                <td className="px-3 py-2">{p.school_name ?? p.school_code ?? '—'}</td>
-                                <td className="px-3 py-2">{p.level_label || '—'}</td>
-                                <td className="px-3 py-2 whitespace-nowrap">{p.class_label || '—'}</td>
-                                <td className="px-3 py-2">{p.option_label || '—'}</td>
-                                <td className="px-3 py-2 text-right font-semibold">{p.points}</td>
-                                <td className="px-3 py-2 text-right">{p.correct_answers}/{p.answers}</td>
-                                <td className="px-3 py-2 whitespace-nowrap">{formatDate(p.created_at)}</td>
+                <div className="overflow-x-auto scroll-thin">
+                    <table className={`${tableClass} min-w-[880px]`}>
+                        <thead className={theadClass}>
+                            <tr>
+                                <th className={thClass}>Joueur</th>
+                                <th className={thClass}>École</th>
+                                <th className={thClass}>Section</th>
+                                <th className={thClass}>Classe</th>
+                                <th className={thClass}>Option</th>
+                                <th className={`${thClass} text-right`}>Score</th>
+                                <th className={`${thClass} text-right`}>Réussite</th>
+                                <th className={thClass}>Inscrit le</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        {pages > 1 && <Pagination page={page} total={pages} color='primary' onChange={(n) => { setPage(n); load(n); }} />}
-    </div>
+                        </thead>
+                        <tbody>
+                            {loading ? <SkeletonRows cols={8} rows={10} /> : players.length === 0 ? (
+                                <tr><td colSpan={8}>
+                                    <EmptyState icon={<Users />} title={hasFilters ? 'Aucun joueur ne correspond' : 'Aucun joueur inscrit'}
+                                        description={hasFilters ? 'Modifiez ou réinitialisez les filtres.' : 'Les élèves apparaissent ici après leur inscription par USSD.'}
+                                        action={hasFilters ? <Button variant="secondary" size="sm" onClick={resetFilters}>Réinitialiser les filtres</Button> : undefined} />
+                                </td></tr>
+                            ) : players.map(p => {
+                                const rate = p.answers ? Math.round((p.correct_answers / p.answers) * 100) : null;
+                                return (
+                                    <tr key={p.phone_number} className={trClass}>
+                                        <td className={tdClass}>
+                                            <Link href={`/app/users/${p.phone_number}`} className="group flex items-center gap-3">
+                                                <Avatar name={p.name} seed={p.phone_number} />
+                                                <span className="min-w-0">
+                                                    <span className="block max-w-[200px] truncate font-medium text-ink-900 group-hover:text-brand-700">{p.name || 'Sans nom'}</span>
+                                                    <span className="block text-xs text-ink-500 tabular">{fmtPhone(p.phone_number)}</span>
+                                                </span>
+                                            </Link>
+                                        </td>
+                                        <td className={`${tdClass} text-ink-700`}>
+                                            <span className="block max-w-[160px] truncate">{p.school_name ?? p.school_code ?? '—'}</span>
+                                        </td>
+                                        <td className={tdClass}>
+                                            {p.level_label ? <Badge tone={p.school_level === 2 ? 'info' : 'neutral'}>{p.level_label}</Badge> : <span className="text-ink-400">—</span>}
+                                        </td>
+                                        <td className={`${tdClass} whitespace-nowrap text-ink-700`}>{p.class_label || '—'}</td>
+                                        <td className={`${tdClass} text-ink-700`}>{p.option_label || <span className="text-ink-400">—</span>}</td>
+                                        <td className={`${tdClass} text-right tabular`}>
+                                            <span className="whitespace-nowrap"><span className="font-semibold text-ink-900">{fmtInt(p.points)}</span> <span className="text-xs text-ink-400">pts</span></span>
+                                        </td>
+                                        <td className={`${tdClass} text-right tabular`}>
+                                            <span className="text-ink-800">{rate === null ? '—' : `${rate} %`}</span>
+                                            <span className="block whitespace-nowrap text-xs text-ink-400">{p.correct_answers}/{p.answers} rép.</span>
+                                        </td>
+                                        <td className={`${tdClass} whitespace-nowrap text-ink-600`} title={fmtDate(p.created_at)}>{fmtDate(p.created_at, false)}</td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+                <Pagination page={page} pages={pages} total={total} perPage={PER_PAGE} onChange={n => { setPage(n); load(n); }} />
+            </Card>
+        </PageBody>
+    );
 }

@@ -1,127 +1,109 @@
 'use client'
 import React from 'react';
+import { Plus, School as SchoolIcon, X } from 'lucide-react';
 import api from '@/lib/api';
 import cookies from '@/lib/cookies';
+import { Alert, Button, Card, CardHeader, Select, Skeleton } from '@/components/ui/kit';
 
-interface AttachedRow { id: number; code: string; phone_number: string; }
-interface SchoolRow { code: string; name: string; }
+interface AttachedRow { id: number; code: string; phone_number: string }
+interface SchoolRow { code: string; name: string }
 
+/** Écoles dont un administrateur d'école voit les joueurs (réservé à l'admin global). */
 export default function AttachedSchoolsManager({ phoneNumber }: { phoneNumber: string }) {
     const [attached, setAttached] = React.useState<AttachedRow[]>([]);
     const [schools, setSchools] = React.useState<SchoolRow[]>([]);
-    const [selected, setSelected] = React.useState<string>('');
-    const [loading, setLoading] = React.useState<boolean>(true);
-    const [busy, setBusy] = React.useState<boolean>(false);
-    const [error, setError] = React.useState<string>('');
+    const [selected, setSelected] = React.useState('');
+    const [loading, setLoading] = React.useState(true);
+    const [busy, setBusy] = React.useState<string | number | null>(null);
+    const [error, setError] = React.useState('');
 
-    const nameOf = (code: string) => schools.find((s) => String(s.code) === String(code))?.name ?? code;
+    const nameOf = (code: string) => schools.find(s => String(s.code) === String(code))?.name ?? code;
 
-    const load = async () => {
-        setLoading(true);
+    const load = React.useCallback(async () => {
         try {
             const [sc, at] = await Promise.all([
-                api(cookies).get('/schools'),
+                api(cookies).get('/schools', { params: { per_page: 200 } }),
                 api(cookies).get('/attached-schools'),
             ]);
-            const allSchools: SchoolRow[] = Array.isArray(sc.data) ? sc.data : (sc.data?.data ?? sc.data?.schools ?? []);
-            const rows: AttachedRow[] = (at.data?.data ?? at.data ?? []).filter(
-                (r: AttachedRow) => String(r.phone_number) === String(phoneNumber)
-            );
-            setSchools(allSchools);
+            const all: SchoolRow[] = Array.isArray(sc.data) ? sc.data : (sc.data?.schools ?? sc.data?.data ?? []);
+            const rows: AttachedRow[] = (at.data?.data ?? at.data ?? []).filter((r: AttachedRow) => String(r.phone_number) === String(phoneNumber));
+            setSchools(all);
             setAttached(rows);
         } catch {
-            setError("Impossible de charger les écoles.");
+            setError('Impossible de charger les écoles.');
         } finally {
             setLoading(false);
         }
-    };
+    }, [phoneNumber]);
 
-    React.useEffect(() => { load(); /* eslint-disable-next-line */ }, [phoneNumber]);
+    React.useEffect(() => { load(); }, [load]);
 
     const add = async () => {
         if (!selected) return;
-        if (attached.some((r) => String(r.code) === String(selected))) { setSelected(''); return; }
-        setBusy(true); setError('');
+        setBusy('add'); setError('');
         try {
             await api(cookies).post('/attached-schools', { phone_number: phoneNumber, code: selected });
             setSelected('');
             await load();
         } catch {
-            setError("Échec de l'ajout de l'école.");
+            setError("L'ajout de l'école a échoué.");
         } finally {
-            setBusy(false);
+            setBusy(null);
         }
     };
 
     const remove = async (id: number) => {
-        setBusy(true); setError('');
+        setBusy(id); setError('');
         try {
             await api(cookies).delete(`/attached-schools/${id}`);
             await load();
         } catch {
-            setError("Échec du retrait de l'école.");
+            setError("Le retrait de l'école a échoué.");
         } finally {
-            setBusy(false);
+            setBusy(null);
         }
     };
 
-    const available = schools.filter((s) => !attached.some((r) => String(r.code) === String(s.code)));
+    const available = schools.filter(s => !attached.some(r => String(r.code) === String(s.code)));
 
     return (
-        <div className="mt-6 rounded-xl bg-white p-5 shadow-sm ring-1 ring-black/5">
-            <h3 className="text-base font-semibold text-gray-900">Écoles autorisées</h3>
-            <p className="mt-1 text-sm text-gray-500">
-                Les écoles rattachées déterminent le périmètre des classements visibles par cet utilisateur
-                (sans effet pour un administrateur, qui voit toutes les écoles).
-            </p>
+        <Card>
+            <CardHeader title="Écoles gérées"
+                description="Un administrateur d'école ne voit que les joueurs de ces écoles. Sans effet pour un administrateur global." />
+            <div className="space-y-4 px-5 py-4">
+                {error && <Alert>{error}</Alert>}
 
-            {error && <div className="mt-3 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600">{error}</div>}
-
-            <div className="mt-4 flex flex-wrap items-end gap-2">
-                <label className="flex-1 min-w-[200px] text-xs text-gray-500">
-                    Ajouter une école
-                    <select
-                        className="mt-1 w-full rounded-md border border-gray-300 px-2 py-2 text-sm outline-none focus:border-[#EC2027] focus:ring-2 focus:ring-[#EC2027]/20"
-                        value={selected}
-                        onChange={(e) => setSelected(e.target.value)}
-                        disabled={loading || busy}
-                    >
-                        <option value="">Sélectionner…</option>
-                        {available.map((s) => <option key={s.code} value={s.code}>{s.name}</option>)}
-                    </select>
-                </label>
-                <button
-                    onClick={add}
-                    disabled={!selected || busy}
-                    className="rounded-lg bg-[#EC2027] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#c91a20] disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                    Ajouter
-                </button>
-            </div>
-
-            <div className="mt-4">
                 {loading ? (
-                    <p className="text-sm text-gray-400">Chargement…</p>
+                    <div className="flex gap-2"><Skeleton className="h-8 w-36 rounded-full" /><Skeleton className="h-8 w-28 rounded-full" /></div>
                 ) : attached.length === 0 ? (
-                    <p className="text-sm text-gray-400">Aucune école rattachée.</p>
+                    <p className="text-sm text-ink-500">Aucune école rattachée.</p>
                 ) : (
                     <ul className="flex flex-wrap gap-2">
-                        {attached.map((r) => (
-                            <li key={r.id} className="flex items-center gap-2 rounded-full bg-[#EC2027]/10 px-3 py-1.5 text-sm text-[#b01519]">
+                        {attached.map(r => (
+                            <li key={r.id} className="inline-flex items-center gap-2 rounded-full border border-ink-200 bg-ink-25 py-1 pl-3 pr-1 text-[13px] font-medium text-ink-800">
+                                <SchoolIcon className="size-3.5 text-ink-400" aria-hidden />
                                 {nameOf(r.code)}
-                                <button
-                                    onClick={() => remove(r.id)}
-                                    disabled={busy}
-                                    aria-label="Retirer"
-                                    className="text-[#EC2027] hover:text-[#c91a20] disabled:opacity-60"
-                                >
-                                    ✕
+                                <span className="text-xs font-normal text-ink-500">{r.code}</span>
+                                <button onClick={() => remove(r.id)} disabled={busy !== null} aria-label={`Retirer ${nameOf(r.code)}`}
+                                    className="rounded-full p-1 text-ink-400 transition-colors hover:bg-brand-50 hover:text-brand-700 disabled:opacity-50">
+                                    <X className="size-3.5" />
                                 </button>
                             </li>
                         ))}
                     </ul>
                 )}
+
+                <div className="flex flex-col gap-2 sm:flex-row">
+                    <Select value={selected} onChange={e => setSelected(e.target.value)} disabled={loading || busy !== null || available.length === 0}
+                        aria-label="Ajouter une école" className="flex-1">
+                        <option value="">{available.length === 0 && !loading ? 'Toutes les écoles sont rattachées' : 'Choisir une école…'}</option>
+                        {available.map(s => <option key={s.code} value={s.code}>{s.name} ({s.code})</option>)}
+                    </Select>
+                    <Button variant="secondary" onClick={add} disabled={!selected} loading={busy === 'add'}>
+                        {busy !== 'add' && <Plus />} Ajouter
+                    </Button>
+                </div>
             </div>
-        </div>
+        </Card>
     );
 }
