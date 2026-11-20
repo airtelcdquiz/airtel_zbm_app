@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link';
 import React from 'react';
-import { Plus, Trophy, Tv } from 'lucide-react';
+import { MonitorPlay, Plus, Trophy, Tv } from 'lucide-react';
 import {
     Alert, ButtonLink, Card, EmptyState, PageBody, PageHeader, Select, SkeletonRows,
     fmtDate, fmtInt, tableClass, tdClass, thClass, theadClass, trClass,
@@ -31,7 +31,10 @@ export default function SessionList() {
                 crumbs={[{ label: 'Tableau de bord', href: '/app' }, { label: 'TV Show' }]}
                 title="TV Show"
                 description="Quiz en direct : l'animateur pilote la session, les joueurs répondent par USSD."
-                actions={<ButtonLink href="/app/tvshow/new"><Plus /> Nouvelle session</ButtonLink>}
+                actions={<>
+                    <ButtonLink href="/app/tvshow/demo" variant="secondary"><MonitorPlay /> Démo et mode d&apos;emploi</ButtonLink>
+                    <ButtonLink href="/app/tvshow/new"><Plus /> Nouvelle session</ButtonLink>
+                </>}
             />
             {error && <Alert className="mb-4">{error}</Alert>}
 
