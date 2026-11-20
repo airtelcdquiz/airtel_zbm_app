@@ -53,6 +53,7 @@ export default function TvGuide() {
                         <li><b>Un seul essai</b> par joueur et par question.</li>
                         <li>Le <b>premier</b> qui donne la bonne réponse gagne <b>10 points</b>. La question se ferme aussitôt.</li>
                         <li>Si personne ne trouve, la question se ferme à la fin du temps.</li>
+                        <li>Seuls les élèves des <b>écoles participantes</b> voient l&apos;option « TV Show » dans leur menu USSD et peuvent s&apos;inscrire.</li>
                         <li>Les points du TV Show <b>ne s&apos;ajoutent pas</b> au score du quiz quotidien.</li>
                         <li>Les questions choisies pour une session ne sont pas envoyées au quiz quotidien avant la fin de la session. Une fois jouées, elles ne reviennent plus dans un autre TV Show.</li>
                     </ul>
@@ -80,7 +81,7 @@ export default function TvGuide() {
 
                 <Section title="Préparer une émission">
                     <ol className="list-decimal space-y-1.5 pl-5">
-                        <li><b>Créer la session</b> (TV Show → Nouvelle session) : titre, date, durée par question (15 à 60 s), délai de diffusion, public visé.</li>
+                        <li><b>Créer la session</b> (TV Show → Nouvelle session) : titre, date, durée par question (15 à 60 s), délai de diffusion et <b>écoles participantes</b> (obligatoire).</li>
                         <li><b>Inscrire les joueurs</b> : à la main dans l&apos;onglet Joueurs, ou en ouvrant les inscriptions. Le joueur compose alors le code USSD, choisit « 9. TV Show » et tape le code à 4 chiffres de la session. Il reçoit un SMS de confirmation.</li>
                         <li><b>Choisir les questions</b> : une par une dans la banque, ou par tirage aléatoire. Ajoutez une ou deux réserves pour remplacer une question au dernier moment.</li>
                         <li><b>Générer le lien de l&apos;écran</b> (onglet Écran) et l&apos;ouvrir sur le PC de la régie, en plein écran (F11). Prenez le lien « fond vert » si la régie fait une incrustation.</li>
