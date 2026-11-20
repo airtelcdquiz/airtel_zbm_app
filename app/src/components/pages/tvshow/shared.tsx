@@ -112,23 +112,22 @@ export const labelOf = (list: Opt[], v: string | number | null | undefined) =>
 
 export interface SessionFormState {
     title: string; scheduled: string; duration: string; delay: string; points: string;
-    mode: RegistrationMode; restricted: boolean;
+    mode: RegistrationMode;
     schools: string[]; levels: string[]; classes: string[]; options: string[];
     max: string;
 }
 
 export const EMPTY_FORM: SessionFormState = {
-    title: '', scheduled: '', duration: '45', delay: '0', points: '10', mode: 'both', restricted: false,
+    title: '', scheduled: '', duration: '45', delay: '0', points: '10', mode: 'both',
     schools: [], levels: [], classes: [], options: [], max: '',
 };
 
 export function formFromSession(s: TvSession): SessionFormState {
     const a: Audience = s.audience ?? {};
-    const restricted = !!(a.schools?.length || a.levels?.length || a.classes?.length || a.options?.length);
     return {
         title: s.title ?? '', scheduled: isoToKinshasaInput(s.scheduled_at),
         duration: String(s.question_duration_s ?? 45), delay: String(s.broadcast_delay_s ?? 0), points: String(s.points_per_win ?? 10),
-        mode: s.registration_mode ?? 'both', restricted,
+        mode: s.registration_mode ?? 'both',
         schools: (a.schools ?? []).map(String), levels: (a.levels ?? []).map(String),
         classes: (a.classes ?? []).map(String), options: (a.options ?? []).map(String),
         max: s.max_players ? String(s.max_players) : '',
@@ -147,14 +146,12 @@ export function formToInput(f: SessionFormState): { error: string } | { input: T
     if (!intIn(f.delay, 0, 60)) return { error: 'Le décalage de diffusion doit être compris entre 0 et 60 secondes.' };
     if (!intIn(f.points, 1, 1000)) return { error: 'Les points doivent être un nombre entier positif.' };
     if (f.max.trim() !== '' && !intIn(f.max, 1, 10_000_000)) return { error: 'Le nombre de places doit être un entier positif (ou vide).' };
-    const audience: Audience = {};
-    if (f.restricted) {
-        if (f.schools.length) audience.schools = f.schools;
-        if (f.levels.length) audience.levels = f.levels;
-        if (f.classes.length) audience.classes = f.classes;
-        if (f.options.length) audience.options = f.options.map(Number);
-        if (!Object.keys(audience).length) return { error: 'Public restreint : choisissez au moins une école, une section, une classe ou une option.' };
-    }
+    // Les écoles participantes sont obligatoires : seuls leurs élèves voient le TV Show sur l'USSD.
+    if (!f.schools.length) return { error: 'Choisissez au moins une école participante.' };
+    const audience: Audience = { schools: f.schools };
+    if (f.levels.length) audience.levels = f.levels;
+    if (f.classes.length) audience.classes = f.classes;
+    if (f.options.length) audience.options = f.options.map(Number);
     return {
         input: {
             title: f.title.trim(),
@@ -169,8 +166,8 @@ export function formToInput(f: SessionFormState): { error: string } | { input: T
     };
 }
 
-function Chips({ label, items, value, onChange, disabled, searchable }: {
-    label: string; items: Opt[]; value: string[]; onChange: (v: string[]) => void; disabled?: boolean; searchable?: boolean;
+function Chips({ label, items, value, onChange, disabled, searchable, emptyLabel = 'Tous' }: {
+    label: string; items: Opt[]; value: string[]; onChange: (v: string[]) => void; disabled?: boolean; searchable?: boolean; emptyLabel?: string;
 }) {
     const [q, setQ] = React.useState('');
     const shown = searchable && q ? items.filter(i => i.label.toLowerCase().includes(q.toLowerCase())) : items;
@@ -179,7 +176,7 @@ function Chips({ label, items, value, onChange, disabled, searchable }: {
         <fieldset disabled={disabled}>
             <legend className="mb-1.5 flex w-full items-center justify-between text-[13px] font-medium text-ink-700">
                 <span>{label}</span>
-                <span className="text-xs font-normal text-ink-500">{value.length ? `${value.length} choisi${value.length > 1 ? 's' : ''}` : 'Tous'}</span>
+                <span className="text-xs font-normal text-ink-500">{value.length ? `${value.length} choisi${value.length > 1 ? 's' : ''}` : emptyLabel}</span>
             </legend>
             {searchable && items.length > 8 && (
                 <input value={q} onChange={e => setQ(e.target.value)} placeholder="Filtrer…" className={cn(inputClass, 'mb-2 h-8 text-[13px]')} aria-label={`Filtrer : ${label}`} />
@@ -235,29 +232,23 @@ export function SessionFields({ form, onChange, disabled, filters }: {
             </div>
 
             <fieldset disabled={disabled} className="rounded-lg border border-ink-200">
-                <legend className="ml-3 px-1 text-[13px] font-medium text-ink-700">Public</legend>
+                <legend className="ml-3 px-1 text-[13px] font-medium text-ink-700">Écoles participantes</legend>
                 <div className="space-y-4 px-4 pb-4 pt-1">
-                    <div className="flex flex-wrap gap-4 text-sm text-ink-800">
-                        <label className="inline-flex items-center gap-2">
-                            <input type="radio" name="audience" checked={!form.restricted} onChange={() => set('restricted', false)} className="accent-brand-600" />
-                            Tous les joueurs
-                        </label>
-                        <label className="inline-flex items-center gap-2">
-                            <input type="radio" name="audience" checked={form.restricted} onChange={() => set('restricted', true)} className="accent-brand-600" />
-                            Restreint (écoles, sections, classes, options)
-                        </label>
-                    </div>
-                    {form.restricted && (
-                        <div className="space-y-4">
-                            {filters.schools.length > 0
-                                ? <Chips label="Écoles" items={filters.schools} value={form.schools} onChange={v => set('schools', v)} searchable />
-                                : <p className="text-xs text-ink-500">{filters.loaded ? 'Liste des écoles indisponible.' : 'Chargement des écoles…'}</p>}
+                    <p className="text-xs text-ink-500">
+                        Obligatoire. Seuls les élèves de ces écoles voient le TV Show dans leur menu USSD, peuvent s&apos;y inscrire ou y être inscrits.
+                    </p>
+                    {filters.schools.length > 0
+                        ? <Chips label="Écoles" items={filters.schools} value={form.schools} onChange={v => set('schools', v)} searchable emptyLabel="Aucune" />
+                        : <p className="text-xs text-ink-500">{filters.loaded ? 'Liste des écoles indisponible.' : 'Chargement des écoles…'}</p>}
+                    <details className="group rounded-lg border border-ink-100 px-3 py-2" open={!!(form.levels.length || form.classes.length || form.options.length)}>
+                        <summary className="cursor-pointer text-[13px] font-medium text-ink-700">Affiner le public (facultatif)</summary>
+                        <div className="mt-3 space-y-4">
                             <Chips label="Sections" items={filters.levels} value={form.levels} onChange={v => set('levels', v)} />
                             <Chips label="Classes" items={filters.classes} value={form.classes} onChange={v => set('classes', v)} />
                             <Chips label="Options" items={filters.options} value={form.options} onChange={v => set('options', v)} />
                             <p className="text-xs text-ink-500">Un critère laissé vide n&apos;est pas filtré.</p>
                         </div>
-                    )}
+                    </details>
                 </div>
             </fieldset>
         </div>

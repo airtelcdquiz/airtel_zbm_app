@@ -14,6 +14,11 @@ import { ZbmFilters, labelOf } from './shared';
 const PER_PAGE = 20;
 
 export default function PlayersTab({ session, filters, onChanged }: { session: TvSession; filters: ZbmFilters; onChanged: () => void }) {
+    // L'ajout groupé ne propose que les écoles participantes (le serveur l'impose aussi).
+    const sessionFilters = React.useMemo(() => {
+        const allowed = new Set((session.audience?.schools ?? []).map(String));
+        return { ...filters, schools: filters.schools.filter(s => allowed.has(s.value)) };
+    }, [filters, session.audience]);
     const [players, setPlayers] = React.useState<TvPlayer[]>([]);
     const [page, setPage] = React.useState(1);
     const [pages, setPages] = React.useState(0);
@@ -132,7 +137,7 @@ export default function PlayersTab({ session, filters, onChanged }: { session: T
             </Card>
 
             <AddPlayerModal open={adding} session={session} onClose={() => setAdding(false)} onAdded={msg => refresh(msg)} />
-            <BulkAddModal open={bulk} session={session} filters={filters} onClose={() => setBulk(false)} onAdded={msg => { setBulk(false); refresh(msg); }} />
+            <BulkAddModal open={bulk} session={session} filters={sessionFilters} onClose={() => setBulk(false)} onAdded={msg => { setBulk(false); refresh(msg); }} />
 
             <Modal open={!!removing} onClose={() => !busy && setRemoving(null)} size="sm"
                 title={live ? 'Exclure ce joueur ?' : 'Retirer ce joueur ?'}
@@ -269,7 +274,7 @@ function BulkAddModal({ open, session, filters, onClose, onAdded }: {
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <Field label="École" className="sm:col-span-2">
                     <Select value={school} onChange={e => setSchool(e.target.value)}>
-                        <option value="">Toutes</option>
+                        <option value="">Toutes les écoles participantes</option>
                         {filters.schools.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                     </Select>
                 </Field>
