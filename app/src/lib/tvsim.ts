@@ -94,7 +94,7 @@ export class SimEngine {
             winnerId: null, winnerMs: 0, answers: [], plan: [],
         }));
         // Le joueur test (vous) est inscrit d'office ; les autres arrivent au fil des secondes.
-        this.players.push({ id: HUMAN_ID, name: 'Vous (test)', school: 'Joueur test', phone: '099•••000', skill: 0, order: 0, points: 0, winMs: 0, human: true });
+        this.players.push({ id: HUMAN_ID, name: 'Vous', school: 'Joueur test', phone: '099•••000', skill: 0, order: 0, points: 0, winMs: 0, human: true });
         const t0 = Date.now() + 600;
         const span = Math.min(14000, 400 * cfg.players);
         for (let i = 0; i < cfg.players; i++) {
