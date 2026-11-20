@@ -42,6 +42,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
             ]
         },
         {
+            label: "Direct", items: [
+                ...when(permissions.is_superuser, { href: "/app/tvshow", label: "TV Show", icon: "tvshow" }),
+            ]
+        },
+        {
             label: "Administration", items: [
                 ...when(permissions.is_superuser, { href: "/app/admins", label: "Administrateurs", icon: "admins" }),
             ]
