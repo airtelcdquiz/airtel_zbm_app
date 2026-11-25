@@ -3,13 +3,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
-import { BookOpen, LayoutDashboard, ListChecks, LogOut, Menu, ShieldCheck, Trophy, Tv, Users, X } from 'lucide-react';
+import { BookOpen, LayoutDashboard, ListChecks, LogOut, Menu, MessageSquareText, ShieldCheck, Trophy, Tv, Users, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Avatar, fmtPhone } from '@/components/ui/kit';
 import cookies from '@/lib/cookies';
 import { API_BASE_URL } from '@/lib/env';
 
-const ICONS = { home: LayoutDashboard, players: Users, admins: ShieldCheck, questions: ListChecks, ranking: Trophy, documents: BookOpen, tvshow: Tv };
+const ICONS = { home: LayoutDashboard, players: Users, admins: ShieldCheck, questions: ListChecks, ranking: Trophy, documents: BookOpen, tvshow: Tv, sms: MessageSquareText };
 export type NavIcon = keyof typeof ICONS;
 export interface NavItem { href: string; label: string; icon: NavIcon }
 export interface NavGroup { label?: string; items: NavItem[] }
